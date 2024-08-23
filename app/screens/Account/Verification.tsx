@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useLayoutEffect } from "react";
 import {
   View,
   TextInput,
@@ -10,6 +10,7 @@ import {
   Alert,
 } from "react-native";
 import Svg, { Path } from "react-native-svg";
+import { useNavigation } from 'expo-router';
 
 interface VerificationProps {
   navigation: any;
@@ -25,6 +26,7 @@ interface VerificationProps {
 }
 
 const Verification: React.FC<VerificationProps> = ({ route }) => {
+  const navigation = useNavigation();
   const { Nombre, User, Number, password, Fecha } = route.params;
   const [code, setCode] = useState<string[]>(["", "", "", ""]);
   const inputs = useRef<Array<TextInput | null>>([]);
@@ -74,7 +76,6 @@ const Verification: React.FC<VerificationProps> = ({ route }) => {
 
           if (response.ok) {
             Alert.alert("Éxito", "Usuario registrado correctamente");
-            navigation.navigate("Home");
           } else {
             const errorData = await response.json();
             Alert.alert("Error", errorData.msg || "Error al registrar usuario");
@@ -87,6 +88,12 @@ const Verification: React.FC<VerificationProps> = ({ route }) => {
         Alert.alert("Error", "Para registrarte tienes que ser mayor de edad");
       }
     }
+    useLayoutEffect(() => {
+      navigation.setOptions({
+        headerShown: false, // Oculta el encabezado
+      });
+    }, [navigation]);
+  
   };
 
   return (
